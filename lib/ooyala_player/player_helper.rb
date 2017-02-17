@@ -18,7 +18,8 @@ module PlayerHelper
 
     capture do
       concat render partial: 'player/partial'
-      concat link_to block_given? ? capture(&block) : 'play video','#', data: { player_id: @player.block_id }, class: 'play-toggle'
+      concat link_to block_given? ? capture(&block) : 'play video','#', data: { player_id: @player.block_id },
+        class: "play-toggle #{params[:class]}"
     end
     # render partial: 'player/partial', locals: { video: video }
   end
