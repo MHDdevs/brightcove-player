@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'player/version'
+require 'ooyala_player/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "player"
-  spec.version       = Player::VERSION
+  spec.name          = "ooyala_player"
+  spec.version       = OoyalaPlayer::VERSION
   spec.authors       = ["Sergey Kulikov"]
   spec.email         = ["kulikov112@users.noreply.github.com"]
 
