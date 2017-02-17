@@ -1,0 +1,146 @@
+hideOverlay = ->
+  $overlay = $('.video-overlay')
+  if $overlay.is(':visible')
+    window.player.destroy()
+    $overlay.hide()
+  return
+
+initVideoOverlay = (element) ->
+  $element = element
+  ooyalaContentId = $element.data('content-id')
+  initTime = parseInt($element.data('content-initial-time')) or 0
+  statsUrl = $element.data('content-stats-url') or ''
+  skin_file = undefined
+
+  ooyalaEventHandler = (player) ->
+    # Disable store stats while ads playing
+    player.mb.subscribe OO.EVENTS.WILL_PLAY_ADS, 'will_play_ads', (eventName) ->
+      if statsUrl != ''
+        window.storeStats = false
+      return
+    player.mb.subscribe OO.EVENTS.ADS_PLAYED, 'ads_played', (eventName) ->
+      if statsUrl != ''
+        window.storeStats = true
+      return
+    player.mb.subscribe OO.EVENTS.FULLSCREEN_CHANGED, 'fullscreenChanged', (eventName) ->
+      resizePlayer()
+      return
+    player.mb.subscribe '*', 'all_events', (eventName) ->
+      if statsUrl != ''
+        events = [
+          OO.EVENTS.PAUSED
+          OO.EVENTS.ERROR
+          OO.EVENTS.STREAM_PLAYED
+          OO.EVENTS.PLAYED
+        ]
+        hasEvent = events.indexOf(eventName) != -1
+        playingEvent = OO.EVENTS.PLAYING == eventName and initTime <= 0
+        playheadSeconds = 0
+        if window.storeStats == true and (hasEvent or playingEvent)
+          playheadSeconds = Math.floor(player.getPlayheadTime())
+          $.ajax
+            method: 'PATCH'
+            url: statsUrl
+            data: lesson_stat: playhead_seconds: playheadSeconds
+      return
+    return
+
+  playerParam =
+    'pcode': $element.data('pcode')
+    'playerBrandingId': $element.data('player-id')
+    'skin': 'config': '<%= asset_url "skin.json" %>'
+    'videoplaza-ads-manager':
+      pulse_host: 'https://uk-mhd.videoplaza.tv'
+      pulse_category: 'mhdpro'
+      pulse_tags: $element.data('pulse-tags')
+    'encodingPriority': [
+      'hls_drm'
+      'hls'
+      'dash_drm'
+      'dash'
+      'mp4'
+      'hds'
+    ]
+    'onCreate': ooyalaEventHandler
+    initialTime: initTime
+    statsUrl: statsUrl
+    embedToken: $element.data('signed-embed-code')
+  window.storeStats = true
+  OO.ready ->
+    window.player = OO.Player.create($element.attr('id'), ooyalaContentId, playerParam)
+
+
+bindPlayer = ->
+  if $('body').css('direction') == 'rtl'
+    observer = new MutationObserver((mutations) ->
+      i = 0
+      while i < mutations.length
+        j = 0
+        while j < mutations[i].addedNodes.length
+          if ~mutations[i].addedNodes[j].id.indexOf('OoyalaPingerIFrame')
+            mutations[i].addedNodes[j].style.left = 'auto'
+            mutations[i].addedNodes[j].style.right = '-5px'
+          if mutations[i].addedNodes[j].getAttribute('data') != null and ~mutations[i].addedNodes[j].getAttribute('data').indexOf('https://uk-mhd.videoplaza.tv/proxy')
+            mutations[i].addedNodes[j].style.left = 'auto'
+            mutations[i].addedNodes[j].style.right = '-9999px'
+            mutations[i].addedNodes[j].style.float = 'right'
+          ++j
+        ++i
+      return
+)
+    config =
+      attributes: true
+      childList: true
+      characterData: true
+    observer.observe document.body, config
+  $('.play-toggle[data-player-id]').click (event) ->
+    event.preventDefault()
+    event.stopPropagation()
+    console.log 'logger'
+    elementId = $(this).data('player-id')
+    if ~elementId.indexOf('question')
+      $('html, body').animate { scrollTop: $('#' + elementId).offset().top - 50 }, 2000
+    else
+      jsPlayerHandler = $('#' + elementId).find('.js-player-handler')
+      initVideoOverlay jsPlayerHandler
+      $('.video-overlay#' + elementId).fadeToggle 'fast'
+      resizePlayer()
+    return
+  $('div.video-overlay').click (event) ->
+    if event.target != this
+      return
+    window.player.destroy()
+    $(this).hide()
+    return
+  $('.close-button').click ->
+    hideOverlay()
+    return
+  # Handle ESC key press
+  $(document).keyup (event) ->
+    if event.keyCode == 27
+      hideOverlay()
+    return
+  return
+
+resizePlayer = ->
+  height = $(window).height()
+  width = height * 16 / 9
+  if width > $(window).width()
+    width = $(window).width()
+  wrapper = $('.ooyala-wrapper:visible')
+  wrapper.innerWidth width
+  padding = wrapper.outerWidth() - wrapper.width()
+  new_height = $('.ooyala-wrapper:visible .oo-player-skin').outerWidth() * 9 / 16
+  margin = (height - new_height - padding) / 2
+  wrapper.css 'margin-top', margin + 'px'
+  return
+
+window.bindPlayer = bindPlayer
+window.resizePlayer = resizePlayer
+
+$ ->
+  bindPlayer()
+
+
+$(window).resize ->
+  resizePlayer()

@@ -1,0 +1,8 @@
+.video-overlay{id: player_block_id(video, params)}
+  .ooyala-wrapper
+    %button.btn.btn-info.close-button.uppercase
+      = t('videos.actions.close')
+      &ensp;
+      = fa_icon 'close'
+    .js-ooyalaplayer-block.ooyalaplayer-block
+      = player_handler(video, params)

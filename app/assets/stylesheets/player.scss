@@ -1,0 +1,65 @@
+$gray-light: rgba(0, 0, 0, 0.6);
+$white: #ffffff;
+$black-light: rgba(0, 0, 0, 0.85);
+
+.ooyala-wrapper {
+  display: block;
+  margin: auto;
+  padding: 20px;
+  position: relative;
+  width: 800px;
+
+  .close-button {
+    border: 0;
+    border-radius: 6px;
+    margin: 20px;
+    position: absolute;
+    z-index: 12000;
+    color: $white;
+    width: auto;
+    background: $gray-light;
+
+    &:hover,
+    &:active,
+    &:focus,
+    &:active:hover {
+      background: $black-light;
+      outline: 0 none;
+    }
+  }
+
+  .fa {
+    font-size: 22px;
+    text-align: center;
+    vertical-align: sub;
+  }
+}
+
+.video-overlay {
+  background-color: $black-light;
+  direction: ltr;
+  display: none;
+  height: 100%;
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.ooyalaplayer-block {
+  text-align: center;
+  z-index: 1001;
+
+  .oo_ads_countdown {
+    display: none !important;
+  }
+}
+
+.oo-start-screen {
+  cursor: pointer !important;
+}
+
+.oo-start-screen-linear-gradient {
+  background: none !important;
+}
