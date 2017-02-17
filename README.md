@@ -5,7 +5,7 @@
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'player'
+gem 'ooyala_player', git: 'git@github.com:MHDdevs/ooyala-player.git'
 ```
 
 Add initializer:
@@ -46,7 +46,10 @@ This will generate to html:
       <i class="fa fa-close"></i>
     </button>
     <div class="js-ooyalaplayer-block ooyalaplayer-block">
-      <div class="js-player-handler" id="handler_collection_1" data-content-id="..." data-signed-embed-code="..." data-player-version="4.11.13" data-pcode="..." data-player-id="..."></div>
+      <div class="js-player-handler" id="handler_collection_1" data-content-id="..."
+         data-signed-embed-code="..." data-player-version="4.11.13"
+         data-pcode="..." data-player-id="...">
+      </div>
     </div>
   </div>
 </div>
@@ -58,7 +61,8 @@ Second argument - hash with parameters.
 
 Currently avaliable params are:
 - as: 'some_new_field_with_ooyala_id' - method name, returns ooyala_id;
-- playhead_seconds: 42 - video starts from this second. If this key set, sending statisitic to `lesson_stat_path()`. if no tgis key set. Video appears to ve preview.
+- playhead_seconds: 42 - video starts from this second. If this key set, sending statisitic to `lesson_stat_path()`.
+  If no this key set, video appears to be preview.
 - class: 'btn' - html classes for link wrapper.
 
 Passing block.
@@ -79,10 +83,10 @@ Watch preview
 
 ## TODO
 
--Add PulseTag to this gem
--Write generator for initializer and migration
--Add tests
--Add oolayable method, for models
+- Add PulseTag to this gem
+- Write generator for initializer and migration
+- Add tests
+- Add oolayable method, for models
 
 ## License
 
