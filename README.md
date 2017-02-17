@@ -1,8 +1,4 @@
-# Player
-
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/player`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+# Ooyala Player Gem
 
 ## Installation
 
@@ -12,28 +8,81 @@ Add this line to your application's Gemfile:
 gem 'player'
 ```
 
-And then execute:
+Add initializer:
 
-    $ bundle
+```ruby
+  OoyalaPlayer.configure do |player|
+    player.version = ENV['OOYALA_PLAYER_VERSION']
+    player.id = ENV['OOYALA_PLAYER_ID']
+    player.ooyala_api_key = ENV['OOYALA_API_KEY']
+    player.ooyala_secret_key = ENV['OOYALA_SECRET_KEY']
+  end
+```
+Include required files:
+  - in application.scss `@import "ooyala_player";`
+  - in application.js `//= require ooyala_player`
+  - Include 3d party files via helper `ooyala_player_include_tags`
 
-Or install it yourself as:
+## Requirements
 
-    $ gem install player
+  Model must have field with ooyala_id.
+  Model should belongs to PulseTag.
 
 ## Usage
 
-TODO: Write usage instructions here
+This gem is adding ooyala video player.
 
-## Development
+Now you can add player layout with this helper:
+```ruby
+render_player @collection, as: :ooyala_preview_id, class: 'btn btn-default btn-take'
+```
 
-After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+This will generate to html:
+```html
+<div class="video-overlay" id="player_ooyala_preview_id_collection_1">
+  <div class="ooyala-wrapper">
+    <button class="btn btn-info close-button uppercase">
+      <span class="translation_missing" title="translation missing: en.videos.actions.close">Close</span>
+      <i class="fa fa-close"></i>
+    </button>
+    <div class="js-ooyalaplayer-block ooyalaplayer-block">
+      <div class="js-player-handler" id="handler_collection_1" data-content-id="..." data-signed-embed-code="..." data-player-version="4.11.13" data-pcode="..." data-player-id="..."></div>
+    </div>
+  </div>
+</div>
+<a data-player-id="player_ooyala_preview_id_collection_1" class="play-toggle btn btn-default btn-take" href="#">play video</a>
+```
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+First argument - `@collection` - class instance, with `ooyala_video_id` method.
+Second argument - hash with parameters.
 
-## Contributing
+Currently avaliable params are:
+- as: 'some_new_field_with_ooyala_id' - method name, returns ooyala_id;
+- playhead_seconds: 42 - video starts from this second. If this key set, sending statisitic to `lesson_stat_path()`. if no tgis key set. Video appears to ve preview.
+- class: 'btn' - html classes for link wrapper.
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/player.
+Passing block.
 
+```ruby
+=render_player @collection, as: :ooyala_preview_id, class: 'btn btn-default btn-take' do
+  span.glyphicon.glyphicon-play-circle
+  = _('Watch preview')
+```
+Passed block will be placed inside link.
+```html
+...
+<a data-player-id="player_ooyala_preview_id_collection_1" class="play-toggle btn btn-default btn-take" href="#">
+<span class="glyphicon glyphicon-play-circle"></span>
+Watch preview
+</a>
+```
+
+## TODO
+
+-Add PulseTag to this gem
+-Write generator for initializer and migration
+-Add tests
+-Add oolayable method, for models
 
 ## License
 

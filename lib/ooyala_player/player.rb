@@ -19,7 +19,7 @@ module OoyalaPlayer
 
     def generate_div_id
       r = "handler_#{@video.class.name.downcase}_#{@video.try(:id)||0}"
-      r << '_preview' if @params[:as] == :preview
+      r << '_preview' if @params[:as] == :ooyala_preview_id
       r
     end
 
