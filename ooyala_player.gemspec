@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.name          = "ooyala_player"
   spec.version       = OoyalaPlayer::VERSION
   spec.authors       = ["Sergey Kulikov"]
-  spec.email         = ["kulikov112@users.noreply.github.com"]
+  spec.email         = ["skulikov@sinergo.ru"]
 
   spec.summary       = %q{Write a short summary, because Rubygems requires one.}
   spec.description   = %q{Write a longer description or delete this line.}

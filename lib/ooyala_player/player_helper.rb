@@ -35,7 +35,7 @@ module PlayerHelper
     options['data-player-version'] = OoyalaPlayer.version
     options['data-pcode'] = player.ooyala_pcode
     options['data-player-id'] = OoyalaPlayer.id
-    options['data-pulse-tags'] = player.video.pulse_tags.tags if player.video.pulse_tags.present?
+    options['data-pulse-tags'] = player.pulse_tags if player.pulse_tags.present?
     if player.params[:playhead_seconds].present?
       options['data-content-initial-time'] = player.params[:playhead_seconds].to_i
       options['data-content-stats-url'] = lesson_stat_path(player.video)

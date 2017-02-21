@@ -1,3 +1,3 @@
 module OoyalaPlayer
-  VERSION = "0.0.221"
+  VERSION = "0.0.3"
 end

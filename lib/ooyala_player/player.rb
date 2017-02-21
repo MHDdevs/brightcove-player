@@ -56,6 +56,14 @@ module OoyalaPlayer
       r << "#{@video.class.name.downcase}_#{@video.try(:id)||0}"
     end
 
+    def pulse_tags
+      if @params[:as].present?
+        video.send "pulse_tags_for_#{@params[:as]}"
+      else
+        video.pulse_tags
+      end
+    end
+
     private
 
     def generate_ooyala_url(video_embed_code)

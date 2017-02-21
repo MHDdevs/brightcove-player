@@ -1,5 +1,7 @@
 # Ooyala Player Gem
 
+Adding player for models with ootala_id fields.
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -18,19 +20,41 @@ Add initializer:
     player.ooyala_secret_key = ENV['OOYALA_SECRET_KEY']
   end
 ```
+
+Currently supported only 4.11.13 version
+
 Include required files:
+
   - in application.scss `@import "ooyala_player";`
   - in application.js `//= require ooyala_player`
   - Include 3d party files via helper `ooyala_player_include_tags`
 
-## Requirements
-
-  Model must have field with ooyala_id.
-  Model should belongs to PulseTag.
-
 ## Usage
 
-This gem is adding ooyala video player.
+### Model
+
+This gem is adding ooyala video player and pulse_tags relation for models.
+
+First, include lib file to models.
+```ruby
+extend OoyalaPlayer::Ooyalable
+```
+For all models add this line in file `ApplicationRecord < ActiveRecord::Base`
+Or, just add it in particular models.
+
+To connect player lib with model add
+```ruby
+ooyalable :column_with_ooyala_id_name
+```
+Parameter is optional, by default player looks for `ooyala_video_id` column.
+
+It's possible to add more than one video to model. Just be sure, that they have
+different params.
+
+To get pulse tags use method `:pulse_tags`,
+or `:pulse_tags_for_column_with_ooyala_id_name` if using with patameter.
+
+### View
 
 Now you can add player layout with this helper:
 ```ruby
@@ -42,7 +66,7 @@ This will generate to html:
 <div class="video-overlay" id="player_ooyala_preview_id_collection_1">
   <div class="ooyala-wrapper">
     <button class="btn btn-info close-button uppercase">
-      <span class="translation_missing" title="translation missing: en.videos.actions.close">Close</span>
+      <span>Close</span>
       <i class="fa fa-close"></i>
     </button>
     <div class="js-ooyalaplayer-block ooyalaplayer-block">
@@ -56,11 +80,11 @@ This will generate to html:
 <a data-player-id="player_ooyala_preview_id_collection_1" class="play-toggle btn btn-default btn-take" href="#">play video</a>
 ```
 
-First argument - `@collection` - class instance, with `ooyala_video_id` method.
+First argument - `@collection` - class instance, with `ooyalable` method.
 Second argument - hash with parameters.
 
 Currently avaliable params are:
-- as: 'some_new_field_with_ooyala_id' - method name, returns ooyala_id;
+- as: 'column_with_ooyala_id_name' - method name, returns ooyala_id;
 - playhead_seconds: 42 - video starts from this second. If this key set, sending statisitic to `lesson_stat_path()`.
   If no this key set, video appears to be preview.
 - class: 'btn' - html classes for link wrapper.
@@ -83,10 +107,12 @@ Watch preview
 
 ## TODO
 
-- Add PulseTag to this gem
-- Write generator for initializer and migration
+- Add I18n support
+- Add gem requirements
+- Deal with N+1 tags relation
+- Add worker to update tags
 - Add tests
-- Add oolayable method, for models
+- Write generator for initializer and migration
 
 ## License
 
