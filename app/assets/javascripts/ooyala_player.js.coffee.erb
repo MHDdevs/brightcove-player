@@ -62,6 +62,9 @@ initVideoOverlay = (element) ->
       'hds'
     ]
     'onCreate': ooyalaEventHandler
+    initialBitrate:
+      'level': 1.0
+      'duration': 30
     initialTime: initTime
     statsUrl: statsUrl
     embedToken: $element.data('signed-embed-code')
