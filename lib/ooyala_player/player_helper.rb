@@ -24,6 +24,23 @@ module PlayerHelper
     # render partial: 'player/partial', locals: { video: video }
   end
 
+  def render_player_wrapper video=nil, params={}
+    @player = OoyalaPlayer::Player.new video, params, current_user
+
+    capture do
+      concat render partial: 'player/partial'
+    end
+  end
+
+  def render_player_button video=nil, params={}, &block
+    @player = OoyalaPlayer::Player.new video, params, current_user
+
+    capture do
+      concat link_to block_given? ? capture(&block) : 'play video','#', data: { player_id: @player.block_id },
+        class: "play-toggle #{params[:class]}"
+    end
+  end
+
   def handler player
     return '' unless player.video
       content_tag :div, '', handler_options(player)

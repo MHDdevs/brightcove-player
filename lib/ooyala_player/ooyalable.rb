@@ -11,7 +11,7 @@ module OoyalaPlayer
       method_name = options[0].present? ? "pulse_tags_for_#{options[0]}" : 'pulse_tags'
 
       define_method method_name.to_sym do
-        OoyalaPlayer::PulseTag.find_or_create_by(ooyala_id: self.send(video_column)).tags
+        OoyalaPlayer::Video.find_or_create_by(ooyala_id: self.send(video_column)).tags
       end
 
     end
