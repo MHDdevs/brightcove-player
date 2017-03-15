@@ -13,6 +13,9 @@ require 'ooyala_player/version'
     mattr_accessor :ooyala_secret_key
     @@ooyala_secret_key = nil
 
+    mattr_accessor :forward_url
+    @@forward_url = nil
+
   def self.configure
     yield self
   end

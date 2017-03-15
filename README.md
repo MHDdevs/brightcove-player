@@ -18,6 +18,7 @@ Add initializer:
     player.id = ENV['OOYALA_PLAYER_ID']
     player.ooyala_api_key = ENV['OOYALA_API_KEY']
     player.ooyala_secret_key = ENV['OOYALA_SECRET_KEY']
+    player.forward_url = 'https://www.mhdpro.com'
   end
 ```
 
