@@ -5,7 +5,8 @@ module PlayerHelper
                        "#{src_location}/skin-plugin/html5-skin.min.js",
                        "#{src_location}/video-plugin/bit_wrapper.min.js",
                        "#{src_location}/ad-plugin/pulse.min.js") +
-    stylesheet_link_tag("#{src_location}/skin-plugin/html5-skin.min.css")
+    stylesheet_link_tag("#{src_location}/skin-plugin/html5-skin.min.css") +
+    javascript_tag("var OoyalaPlayer = { locale: '#{I18n.locale}'};")
   end
 
   def src_location

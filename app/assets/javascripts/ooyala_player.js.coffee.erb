@@ -48,7 +48,9 @@ initVideoOverlay = (element) ->
   playerParam =
     'pcode': $element.data('pcode')
     'playerBrandingId': $element.data('player-id')
-    'skin': 'config': '<%= asset_url "skin.json" %>'
+    'skin':
+      config: '<%= asset_url "skin.json" %>'
+      inline: localization: defaultLanguage: OoyalaPlayer.locale
     'videoplaza-ads-manager':
       pulse_host: 'https://uk-mhd.videoplaza.tv'
       pulse_category: 'mhdpro'
