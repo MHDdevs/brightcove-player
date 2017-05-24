@@ -22,7 +22,7 @@ Add initializer:
   end
 ```
 
-Currently supported only 4.11.13 version
+Currently supported only 4.13.5 version
 
 Include required files:
 
@@ -34,7 +34,7 @@ Include required files:
 
 ### Model
 
-This gem is adding ooyala video player and pulse_tags relation for models.
+This gem is adding ooyala video player and video relation for models.
 
 First, include lib file to models.
 ```ruby
@@ -52,8 +52,16 @@ Parameter is optional, by default player looks for `ooyala_video_id` column.
 It's possible to add more than one video to model. Just be sure, that they have
 different params.
 
-To get pulse tags use method `:pulse_tags`,
-or `:pulse_tags_for_column_with_ooyala_id_name` if using with patameter.
+To get video object use method `:video`,
+or `:video_for_column_with_ooyala_id_name` if using with patameter.
+
+### Multilanguage support
+
+Gem add `:video(locale=nil)` method and
+`video_locale` methods, where locales are from avaliable locales.
+If you have custom column name, then methods will be named
+`video_for_column_with_ooyala_id_name_locale`
+
 
 ### View
 
@@ -84,6 +92,12 @@ This will generate to html:
 First argument - `@collection` - class instance, with `ooyalable` method.
 Second argument - hash with parameters.
 
+
+It is pissible to separate button and player container in view.
+use
+```ruby =render_player_wrapper @video ``` for container
+and ```ruby =render_player_button @video ``` for button
+
 Currently avaliable params are:
 - as: 'column_with_ooyala_id_name' - method name, returns ooyala_id;
 - playhead_seconds: 42 - video starts from this second. If this key set, sending statisitic to `lesson_stat_path()`.
@@ -106,9 +120,33 @@ Watch preview
 </a>
 ```
 
+### rails_admin support
+
+This gem add's video table to rails admin interface
+Video has ooyala_id and pulse tags fields. Pulse tags can be updated by 'update pulse tags' button.
+Parents column has links to objects, that use this video.
+
+To add pulse_tags on model show view add field ```ruby field :pulse_tags```
+
+```ruby
+show do
+  ...
+  field :pulse_tags
+  ...
+end
+```
+
+## OoyalaPlayer::Video
+
+### Methods
+
+  * `pulse_tags` - returns string with tags
+  * `update_tags` - get tags from ooyala api with worker
+  * `update_tags!` - get tags from ooyala api immidiatly
+  * `parents` - array of objects, using this video
+
 ## TODO
 
-- Add I18n support
 - Add gem requirements
 - Deal with N+1 tags relation
 - Add worker to update tags

@@ -30,8 +30,9 @@ initVideoOverlay = (element) ->
         events = [
           OO.EVENTS.PAUSED
           OO.EVENTS.ERROR
+          OO.EVENTS.SEEKED
           OO.EVENTS.STREAM_PLAYED
-          OO.EVENTS.PLAYED
+          OO.EVENTS.VC_PLAYED
         ]
         hasEvent = events.indexOf(eventName) != -1
         playingEvent = OO.EVENTS.PLAYING == eventName and initTime <= 0
@@ -44,13 +45,14 @@ initVideoOverlay = (element) ->
             data: lesson_stat: playhead_seconds: playheadSeconds
       return
     return
-
   playerParam =
     'pcode': $element.data('pcode')
     'playerBrandingId': $element.data('player-id')
     'skin':
       config: '<%= asset_url "skin.json" %>'
-      inline: localization: defaultLanguage: OoyalaPlayer.locale
+      inline:
+        localization:
+          defaultLanguage: if OoyalaPlayer.locale in OoyalaPlayer.avaliable_locales then OoyalaPlayer.locale else 'en'
     'videoplaza-ads-manager':
       pulse_host: 'https://uk-mhd.videoplaza.tv'
       pulse_category: 'mhdpro'
@@ -73,6 +75,7 @@ initVideoOverlay = (element) ->
   window.storeStats = true
   OO.ready ->
     window.player = OO.Player.create($element.attr('id'), ooyalaContentId, playerParam)
+    resizePlayer()
 
 
 bindPlayer = ->
@@ -101,7 +104,6 @@ bindPlayer = ->
   $('.play-toggle[data-player-id]').click (event) ->
     event.preventDefault()
     event.stopPropagation()
-    console.log 'logger'
     elementId = $(this).data('player-id')
     if ~elementId.indexOf('question')
       $('html, body').animate { scrollTop: $('#' + elementId).offset().top - 50 }, 2000

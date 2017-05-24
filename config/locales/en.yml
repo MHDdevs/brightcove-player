@@ -1,2 +1,20 @@
 en:
   close: close
+  admin:
+    actions:
+      load_tags:
+        link: Load Backlot Tags
+        menu: Load Backlot Tags
+        done: Succesfully load all Backlot tags
+      load_tag:
+        link: Load Backlot Tag
+        menu: Load Backlot Tag
+        done: Succesfully load Backlot tag
+      load_assets:
+        link: Load Backlot assets
+        menu: Load Backlot assets
+        done: Succesfully load Backlot assets
+      load_meta:
+        link: Load Backlot metadata
+        menu: Load Backlot metadata
+        done: Succesfully load Backlot metadata

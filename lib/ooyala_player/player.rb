@@ -1,11 +1,17 @@
 module OoyalaPlayer
   class Player
+    attr_accessor :object_with_video
     attr_accessor :video
     attr_accessor :params
 
-    def initialize(video, params, user)
-      @video = video
+    def initialize(object_with_video, params, user)
+      @object_with_video = object_with_video
       @params = params
+      @video = if @params[:as].present?
+          @object_with_video.send("video_for_#{@params[:as]}")
+        else
+          @object_with_video.video
+        end
       @user = user
     end
 
@@ -13,28 +19,20 @@ module OoyalaPlayer
       {
         class: 'js-player-handler',
         id: generate_div_id,
-        'data-content-id': video_id
+        'data-content-id': @video.id
       }
     end
 
     def generate_div_id
-      r = "handler_#{@video.class.name.downcase}_#{@video.try(:id)||0}"
+      r = "handler_#{@object_with_video.class.name.downcase}_#{@object_with_video.try(:id)||0}"
       r << '_preview' if @params[:as] == :ooyala_preview_id
       r
-    end
-
-    def video_id
-      if @params[:as].present?
-        @video.send(@params[:as])
-      else
-        @video.ooyala_video_id
-      end
     end
 
     # Code from Ooyala API documentation:
     # http://support.ooyala.com/developers/documentation/reference/player_v3_dev_xdsample.html
     def signed_embed_code_url(video_embed_code=nil)
-      video_embed_code ||= video_id
+      video_embed_code ||= @video.id
       params_hash = {}
 
       uri = URI.parse(generate_ooyala_url(video_embed_code))
@@ -53,16 +51,17 @@ module OoyalaPlayer
     def block_id
       r = 'player_'
       r << "#{@params[:as]}_" if @params[:as].present?
-      r << "#{@video.class.name.downcase}_#{@video.try(:id)||0}"
+      r << "#{@object_with_video.class.name.downcase}_#{@object_with_video.try(:id)||0}"
     end
 
     def pulse_tags
-      if @params[:as].present?
-        video.send "pulse_tags_for_#{@params[:as]}"
-      else
-        video.pulse_tags
-      end
+      @video.tags
     end
+
+    def meta
+      @video.meta || {}
+    end
+
 
     private
 

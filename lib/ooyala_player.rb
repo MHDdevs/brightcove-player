@@ -1,4 +1,7 @@
 require 'ooyala_player/version'
+require 'ooyala_player/rails_admin'
+require 'active_record'
+require_relative '../app/models/ooyala_player/video.rb'
 
   module OoyalaPlayer
     mattr_accessor :version
@@ -22,7 +25,7 @@ require 'ooyala_player/version'
 end
 
 require 'ooyala_player/player_helper'
+require 'ooyala_player/pulse_tag_field'
 require 'ooyala_player/engine'
 require 'ooyala_player/player'
 require 'ooyala_player/ooyalable'
-# require '../app/models/ooyala_player/pulse_tag'

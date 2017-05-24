@@ -4,9 +4,10 @@ module PlayerHelper
                        "#{src_location}/video-plugin/main_html5.min.js",
                        "#{src_location}/skin-plugin/html5-skin.min.js",
                        "#{src_location}/video-plugin/bit_wrapper.min.js",
-                       "#{src_location}/ad-plugin/pulse.min.js") +
-    stylesheet_link_tag("#{src_location}/skin-plugin/html5-skin.min.css") +
-    javascript_tag("var OoyalaPlayer = { locale: '#{I18n.locale}'};")
+                       "#{src_location}/ad-plugin/pulse.min.js",
+                       'https://uk-mhd.videoplaza.tv/proxy/pulse-sdk-html5-bridges/v4/latest.min.js', defer: true) +
+    stylesheet_link_tag("#{src_location}/skin-plugin/html5-skin.min.css", async: true) +
+    javascript_tag("var OoyalaPlayer = { locale: '#{I18n.locale}', avaliable_locales: ['en', 'it'] };")
   end
 
   def src_location
