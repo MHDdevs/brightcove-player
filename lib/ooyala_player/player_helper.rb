@@ -44,7 +44,7 @@ module PlayerHelper
   end
 
   def handler player
-    return '' unless player.video
+    return '' unless player.object_with_video
       content_tag :div, '', handler_options(player)
   end
 
@@ -57,7 +57,7 @@ module PlayerHelper
     options['data-pulse-tags'] = player.pulse_tags if player.pulse_tags.present?
     if player.params[:playhead_seconds].present?
       options['data-content-initial-time'] = player.params[:playhead_seconds].to_i
-      options['data-content-stats-url'] = lesson_stat_path(player.video)
+      options['data-content-stats-url'] = lesson_stat_path(player.object_with_video)
     end
     options
   end
