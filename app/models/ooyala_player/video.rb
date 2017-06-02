@@ -1,10 +1,6 @@
 module OoyalaPlayer
   class Video < ActiveRecord::Base
     self.primary_key = :ooyala_id
-
-    # has_many :collections, class_name: Collection::Translation, foreign_key: 'ooyala_preview_id'
-    # has_many :lessons, class_name: Lesson::Translation, foreign_key: 'ooyala_video_id'
-
     @@_parents = []
 
     def update_tags

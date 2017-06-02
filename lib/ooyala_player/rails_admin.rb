@@ -19,6 +19,8 @@ RailsAdmin.config do |config|
   end
   config.model 'OoyalaPlayer::Video' do
 
+    label 'Ooyala Video'
+
     list do
       field :ooyala_id
       field :tags
@@ -27,7 +29,8 @@ RailsAdmin.config do |config|
       field :parents do
         formatted_value do
           bindings[:object].parents.map do |p|
-            bindings[:view].link_to [p.class.name, p.name].join('_'),  bindings[:view].show_path(model_name: p.class.name, id: p.id)
+            name = p.try(:name) || p.slug
+            bindings[:view].link_to [p.class.name, name].join('_'),  bindings[:view].show_path(model_name: p.class.name, id: p.id)
           end.join(', ').html_safe()
         end
       end
@@ -41,7 +44,8 @@ RailsAdmin.config do |config|
       field :parents do
         formatted_value do
           bindings[:object].parents.map do |p|
-            bindings[:view].link_to [p.class.name, p.name].join('_'),  bindings[:view].show_path(model_name: p.class.name, id: p.id)
+            name = p.try(:name) || p.slug
+            bindings[:view].link_to [p.class.name, name].join('_'),  bindings[:view].show_path(model_name: p.class.name, id: p.id)
           end.join(', ').html_safe()
         end
       end

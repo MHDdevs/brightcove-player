@@ -1,11 +1,19 @@
 require 'ooyala_player/version'
 require 'ooyala_player/rails_admin'
 require 'active_record'
-require_relative '../app/models/ooyala_player/video.rb'
 
   module OoyalaPlayer
     mattr_accessor :version
     @@version = 'latest'
+
+    mattr_accessor :pulse_category
+    @@pulse_category = ''
+
+    mattr_accessor :stat_model
+    @@stat_model = 'lesson_stat'
+
+    mattr_accessor :stat_method
+    @@stat_method = :patch
 
     mattr_accessor :id
     @@id = nil
@@ -19,11 +27,20 @@ require_relative '../app/models/ooyala_player/video.rb'
     mattr_accessor :forward_url
     @@forward_url = nil
 
+    mattr_accessor :table_name
+    @@table_name = nil
+
+  def self.table_name=(table_name)
+    @@table_name = table_name
+    OoyalaPlayer::Video.table_name = OoyalaPlayer.table_name unless @@table_name.nil?
+  end
+
   def self.configure
     yield self
   end
 end
 
+require_relative '../app/models/ooyala_player/video.rb'
 require 'ooyala_player/player_helper'
 require 'ooyala_player/pulse_tag_field'
 require 'ooyala_player/engine'

@@ -40,9 +40,9 @@ initVideoOverlay = (element) ->
         if window.storeStats == true and (hasEvent or playingEvent)
           playheadSeconds = Math.floor(player.getPlayheadTime())
           $.ajax
-            method: 'PATCH'
+            method: '<%= OoyalaPlayer.stat_method == :patch ? 'PATCH' : 'POST' %>'
             url: statsUrl
-            data: lesson_stat: playhead_seconds: playheadSeconds
+            data: <%= OoyalaPlayer.stat_model %>: playhead_seconds: playheadSeconds
       return
     return
   playerParam =
@@ -55,7 +55,7 @@ initVideoOverlay = (element) ->
           defaultLanguage: if OoyalaPlayer.locale in OoyalaPlayer.avaliable_locales then OoyalaPlayer.locale else 'en'
     'videoplaza-ads-manager':
       pulse_host: 'https://uk-mhd.videoplaza.tv'
-      pulse_category: 'mhdpro'
+      pulse_category: OoyalaPlayer.pulse_category
       pulse_tags: $element.data('pulse-tags')
     'encodingPriority': [
       'hls_drm'

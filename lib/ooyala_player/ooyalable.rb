@@ -12,7 +12,13 @@ module OoyalaPlayer
 
       define_method method_name.to_sym do |locale=nil|
         col = video_column
-        col = "#{col}_#{locale}".to_sym if locale.present?
+
+        if locale.present? && locale != I18n.locale # if locale is the same, call method without locale postfix
+          localized_col = "#{col}_#{locale}".to_sym
+          return nil unless respond_to?(localized_col) #if no localize accessors, then no
+          col = localized_col
+        end
+
         column_method = self.send(col)
         OoyalaPlayer::Video.find_or_create_by(ooyala_id: column_method) unless column_method.nil?
       end
@@ -22,15 +28,18 @@ module OoyalaPlayer
       end
 
       I18n.available_locales.each do |locale|
-        define_method "#{method_name}_#{locale}" do
-          self.send(method_name, locale)
+        if respond_to?("#{video_column}_#{locale}")
+          define_method "#{method_name}_#{locale}" do
+            self.send(method_name, locale)
+          end
         end
       end
 
       if self < ActiveRecord::Base
-        # OoyalaPlayer::Video.add_with_videos name: self.name, column: video_column
-        if Globalize::Accessors::InstanceMethods.in? self.ancestors
+        if Object.const_defined?('Globalize::Accessors') && Globalize::Accessors::InstanceMethods.in?(self.ancestors)
           OoyalaPlayer::Video.add_with_videos name: "#{self.name}::Translation", column: video_column
+        else
+          OoyalaPlayer::Video.add_with_videos name: self.name, column: video_column
         end
       else
         OoyalaPlayer::Video.add_with_videos name: 'Setting', column: 'value'

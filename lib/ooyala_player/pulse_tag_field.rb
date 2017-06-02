@@ -6,17 +6,14 @@ module OoyalaPlayer
       v = bindings[:view]
       I18n.available_locales.map do |locale|
         o.class.video_columns.map do |column|
-          video = o.send(column == :ooyala_video_id ? "video" : "video_for_#{column}", locale)
+          video = o.try(column == :ooyala_video_id ? "video" : "video_for_#{column}", locale)
           if video.present?
             tags = video.tags
             tags = 'no_tags' if tags.blank?
             "Tags for #{column}[#{locale}] #{v.link_to tags, v.show_path(model_name: 'OoyalaPlayer~Video', id: video.id)}"
-          else
-            'no_tags'
           end
-        end.join('<br/>')
-      end.join('<br/>').html_safe()
-
+        end.compact.join('<br/>')
+      end.reject(&:empty?).join('<br/>').html_safe()
     end
 
     register_instance_option :partial do
