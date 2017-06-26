@@ -36,7 +36,7 @@ module OoyalaPlayer
       end
 
       if self < ActiveRecord::Base
-        if Object.const_defined?('Globalize::Accessors') && Globalize::Accessors::InstanceMethods.in?(self.ancestors)
+        if translates? && video_column.in?(translated_attribute_names)
           OoyalaPlayer::Video.add_with_videos name: "#{self.name}::Translation", column: video_column
         else
           OoyalaPlayer::Video.add_with_videos name: self.name, column: video_column

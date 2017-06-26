@@ -29,7 +29,7 @@ RailsAdmin.config do |config|
       field :parents do
         formatted_value do
           bindings[:object].parents.map do |p|
-            name = p.try(:name) || p.slug
+            name = p.try(:name) || p.try(:title) || p.try(:slug) || p.class.name
             bindings[:view].link_to [p.class.name, name].join('_'),  bindings[:view].show_path(model_name: p.class.name, id: p.id)
           end.join(', ').html_safe()
         end
@@ -44,7 +44,7 @@ RailsAdmin.config do |config|
       field :parents do
         formatted_value do
           bindings[:object].parents.map do |p|
-            name = p.try(:name) || p.slug
+            name = p.try(:name) || p.try(:title) || p.try(:slug) || p.class.name
             bindings[:view].link_to [p.class.name, name].join('_'),  bindings[:view].show_path(model_name: p.class.name, id: p.id)
           end.join(', ').html_safe()
         end

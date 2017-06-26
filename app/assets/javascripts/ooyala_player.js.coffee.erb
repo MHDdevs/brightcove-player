@@ -1,3 +1,4 @@
+
 hideOverlay = ->
   $overlay = $('.video-overlay')
   if $overlay.is(':visible')
@@ -55,7 +56,7 @@ initVideoOverlay = (element) ->
           defaultLanguage: if OoyalaPlayer.locale in OoyalaPlayer.avaliable_locales then OoyalaPlayer.locale else 'en'
     'videoplaza-ads-manager':
       pulse_host: 'https://uk-mhd.videoplaza.tv'
-      pulse_category: OoyalaPlayer.pulse_category
+      pulse_category: '<%= OoyalaPlayer.pulse_category %>'
       pulse_tags: $element.data('pulse-tags')
     'encodingPriority': [
       'hls_drm'

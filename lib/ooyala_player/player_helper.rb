@@ -7,7 +7,7 @@ module PlayerHelper
                        "#{src_location}/ad-plugin/pulse.min.js",
                        'https://uk-mhd.videoplaza.tv/proxy/pulse-sdk-html5-bridges/v4/latest.min.js', defer: true) +
     stylesheet_link_tag("#{src_location}/skin-plugin/html5-skin.min.css", async: true) +
-    javascript_tag("var OoyalaPlayer = { locale: '#{I18n.locale}', avaliable_locales: ['en', 'it'], pulse_category: '#{OoyalaPlayer.pulse_category}'};")
+    javascript_tag("var OoyalaPlayer = { locale: '#{I18n.locale}', avaliable_locales: ['en', 'it'] };")
   end
 
   def src_location
@@ -49,6 +49,9 @@ module PlayerHelper
   end
 
   def handler_options player
+    path = OoyalaPlayer.stat_model
+    path += 's' if OoyalaPlayer.stat_method == :create
+    path += '_path'
     options = player.init_handler_options
     options['data-signed-embed-code'] = player.signed_embed_code_url
     options['data-player-version'] = OoyalaPlayer.version
@@ -57,7 +60,7 @@ module PlayerHelper
     options['data-pulse-tags'] = player.pulse_tags if player.pulse_tags.present?
     if player.params[:playhead_seconds].present?
       options['data-content-initial-time'] = player.params[:playhead_seconds].to_i
-      options['data-content-stats-url'] = send("#{OoyalaPlayer.stat_model}s_path", player.object_with_video)
+      options['data-content-stats-url'] = send(path, player.object_with_video)
     end
     options
   end

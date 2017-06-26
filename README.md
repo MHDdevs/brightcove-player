@@ -19,8 +19,30 @@ Add initializer:
     player.ooyala_api_key = ENV['OOYALA_API_KEY']
     player.ooyala_secret_key = ENV['OOYALA_SECRET_KEY']
     player.forward_url = 'https://www.mhdpro.com'
+    player.pulse_category = 'mhdpro'
+    player.table_name = 'videos'
+    player.pulse_category = 'mhdpro'
+    player.stat_model = 'lesson_stat'
+    player.stat_method = :patch
   end
 ```
+  - `player.forward_url` - url, where watermark leads
+  - `player.table_name` - table name for storing ooyala video-data
+    mhd - 'ooyala_videos',
+    pro - 'videos',
+    default 'videos'
+  - `player.pulse_category` - category for videoplaza ads
+    mhd - 'myhairdressers',
+    pro - 'mhdpro'
+    default - ''
+  - `player.stat_model` - model, that stores stat data (playhead seconds, etc.)
+    mhd - 'video_stat',
+    pro - 'lesson_stat'
+    default - 'lesson_stat'
+  - `player.stat_method` - type of request. MHD creates stat object, while PRO update it.
+    mhd - :create,
+    pro - :patch
+    default - :patch
 
 Currently supported only 4.13.5 version
 
@@ -57,7 +79,10 @@ or `:video_for_column_with_ooyala_id_name` if using with patameter.
 
 ### Multilanguage support
 
-Gem add `:video(locale=nil)` method and
+If `:column_with_ooyala_id_name` is globalized, then `ooyalable :column_with_ooyala_id_name`
+should be plased after `translates` method.
+
+Gem adds `:video(locale=nil)` method and
 `video_locale` methods, where locales are from avaliable locales.
 If you have custom column name, then methods will be named
 `video_for_column_with_ooyala_id_name_locale`
@@ -95,14 +120,16 @@ Second argument - hash with parameters.
 
 It is pissible to separate button and player container in view.
 use
-```ruby =render_player_wrapper @video ``` for container
-and ```ruby =render_player_button @video ``` for button
+```=render_player_wrapper @video``` for container
+and ```=render_player_button @video``` for button
 
 Currently avaliable params are:
 - as: 'column_with_ooyala_id_name' - method name, returns ooyala_id;
 - playhead_seconds: 42 - video starts from this second. If this key set, sending statisitic to `lesson_stat_path()`.
   If no this key set, video appears to be preview.
 - class: 'btn' - html classes for link wrapper.
+- searchable: true - if true? than wrap wideo object with VideoObject markup [schema.org](http://www.schema.org/VideoObject).
+**Danger** Then Video is searchable, it provides static link for video, without expired time.
 
 Passing block.
 
@@ -129,9 +156,14 @@ Parents column has links to objects, that use this video.
 To add pulse_tags on model show view add field ```ruby field :pulse_tags```
 
 ```ruby
-show do
-  ...
-  field :pulse_tags
+rails_admin do
+      configure :pulse_tags, :pulse_tags_field
+      ...
+  show do
+    ...
+    field :pulse_tags
+    ...
+  end
   ...
 end
 ```
