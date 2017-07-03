@@ -1,0 +1,9 @@
+<%- if ENV['AIRBRAKE_ID'] && ENV['AIRBRAKE_KEY'] %>
+  airbrake = new (airbrakeJs.Client)(
+    projectId: <%= ENV['AIRBRAKE_ID'] %>
+    projectKey: "<%= ENV['AIRBRAKE_KEY'] %>")
+  airbrake.addFilter (notice) ->
+    notice.context.environment = 'Staging'
+    return notice if notice.context.error_type == 'ooyala'
+    null
+<% end %>

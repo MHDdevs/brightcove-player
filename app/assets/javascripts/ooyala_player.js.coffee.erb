@@ -1,3 +1,6 @@
+#= require airbrake-js-client.min
+#= require bowser
+#= require airbrake
 
 hideOverlay = ->
   $overlay = $('.video-overlay')
@@ -14,6 +17,16 @@ initVideoOverlay = (element) ->
   skin_file = undefined
 
   ooyalaEventHandler = (player) ->
+    player.mb.subscribe OO.EVENTS.ERROR, 'error', (event, description) ->
+      if typeof airbrake != 'undefined'
+        airbrake.notify(
+          error: 'OoyalaPlayer ' + description
+          environment:
+            browser: bowser
+            url: window.location.href
+          context:
+            error_type: 'ooyala'
+        )
     # Disable store stats while ads playing
     player.mb.subscribe OO.EVENTS.WILL_PLAY_ADS, 'will_play_ads', (eventName) ->
       if statsUrl != ''
