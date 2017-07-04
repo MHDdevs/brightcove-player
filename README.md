@@ -24,6 +24,8 @@ Add initializer:
     player.pulse_category = 'mhdpro'
     player.stat_model = 'lesson_stat'
     player.stat_method = :patch
+    player.airbrake = { id: AIRBRAKE_ID,
+                        key: ARBRAKE_KEY }
   end
 ```
   - `player.forward_url` - url, where watermark leads

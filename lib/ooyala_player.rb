@@ -30,6 +30,9 @@ require 'active_record'
     mattr_accessor :table_name
     @@table_name = nil
 
+    mattr_accessor :airbrake
+    @@airbrake = {id: nil, key: nil}
+
   def self.table_name=(table_name)
     @@table_name = table_name
     OoyalaPlayer::Video.table_name = OoyalaPlayer.table_name unless @@table_name.nil?
