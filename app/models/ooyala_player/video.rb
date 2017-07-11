@@ -30,7 +30,7 @@ module OoyalaPlayer
       update assets: ooyala_get("", include: 'primary_preview_image')
     end
 
-    def unsigned_embed_code_url
+    def meta_embedURL
       url = "https://player.ooyala.com/iframe.html?ec=#{ooyala_id}&"
       url << "pcode=#{ ENV['OOYALA_API_KEY'].split('.')[0]}&"
       url << "pbid=#{ ENV['OOYALA_PLAYER_ID']}"
@@ -47,11 +47,11 @@ module OoyalaPlayer
       ( meta['description'] if meta.present? ) || parent.try(:description) || parent.class.name
     end
 
-    def meta_thumbnail
+    def meta_thumbnailUrl
       assets.dig('primary_preview_image', 'url_ssl') if assets.present?
     end
 
-    def meta_uploaded_date
+    def meta_uploadDate
       assets.dig('created_at') if assets.present?
     end
 

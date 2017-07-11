@@ -1,20 +1,15 @@
 - hash = @player.params[:searchable] ? {itemprop: 'video', itemscope: true, itemtype: 'http://schema.org/VideoObject'} : {}
-.video-overlay{ hash, id: @player.block_id }
-  .ooyala-wrapper
-    %button.btn.btn-info.close-button.uppercase
+.video-overlay{ hash, id: @player.block_id }<
+  .ooyala-wrapper<
+    %button.btn.btn-info.close-button.uppercase<
       = t('close')
       &ensp;
       = fa_icon 'close'
     -if @player.params[:searchable]
       -@player.meta.each do |key, value|
-        %meta{ itemprop: key, content: value }
-      %meta{ itemprop: 'embedURL', content: @player.video.unsigned_embed_code_url }
-      %meta{ itemprop: 'name', content: @player.video.meta_name }
-      %meta{ itemprop: 'description', content: @player.video.meta_description }
-      %meta{ itemprop: 'uploadDate', content: @player.video.meta_uploaded_date }
-      %meta{ itemprop: 'thumbnailUrl', content: @player.video.meta_thumbnail }
-      %meta{ itemprop: 'duration', content: @player.video.meta_duration }
-    %object
-      .js-ooyalaplayer-block.ooyalaplayer-block
-        = handler @player
-
+        %meta{ itemprop: key, content: value}<
+      -%w[embedURL name description uploadDate thumbnailUrl duration].each do |m|
+        - if @player.video.send("meta_#{m}").present? && !(m.in? @player.meta.keys)
+          %meta{ itemprop: m, content: @player.video.send("meta_#{m}") }
+    .js-ooyalaplayer-block.ooyalaplayer-block<
+      = handler(@player)
