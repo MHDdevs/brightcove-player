@@ -43,6 +43,7 @@ require 'active_record'
   end
 end
 
+require_relative '../app/workers/ooyala_player/ooyala_tags_fetcher.rb'
 require_relative '../app/models/ooyala_player/video.rb'
 require 'ooyala_player/player_helper'
 require 'ooyala_player/pulse_tag_field'

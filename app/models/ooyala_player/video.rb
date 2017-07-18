@@ -4,17 +4,12 @@ module OoyalaPlayer
     @@_parents = []
 
     def update_tags
-      OoyalaTagsFetcher.perform_async(ooyala_id)
+      OoyalaPlayer::OoyalaTagsFetcher.perform_async(ooyala_id)
     end
 
     def ooyala_get(element, params={})
       api = Ooyala::API.new(ENV['OOYALA_API_KEY'], ENV['OOYALA_SECRET_KEY'])
-      begin
-        data = api.get("assets/#{ooyala_id}/#{element}", params)
-      rescue Exception => e
-        return e
-      end
-      data
+      data = api.get("assets/#{ooyala_id}/#{element}", params)
     end
 
     def update_tags!
