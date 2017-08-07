@@ -3,6 +3,8 @@ module OoyalaPlayer
     self.primary_key = :ooyala_id
     @@_parents = []
 
+    validates :ooyala_id, uniqueness: true, presence: true
+
     def update_tags
       OoyalaPlayer::OoyalaTagsFetcher.perform_async(ooyala_id)
     end
