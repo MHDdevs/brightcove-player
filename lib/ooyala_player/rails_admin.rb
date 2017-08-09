@@ -25,7 +25,9 @@ RailsAdmin.config do |config|
       field :ooyala_id
       field :tags
       field :meta, :meta_tag_field
-      field :assets, :asset_field
+      field :assets, :asset_field do
+        sortable false
+      end
       field :parents do
         formatted_value do
           bindings[:object].parents.map do |p|
