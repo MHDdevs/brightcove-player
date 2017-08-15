@@ -57,7 +57,9 @@ RailsAdmin.config do |config|
       field :ooyala_id
       field :tags
       field :meta
-      field :assets
+      field :assets do
+        read_only true
+      end
     end
 
   end
