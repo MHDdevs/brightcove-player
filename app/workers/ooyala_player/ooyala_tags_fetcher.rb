@@ -2,12 +2,8 @@ module OoyalaPlayer
   class OoyalaTagsFetcher
     include Sidekiq::Worker
 
-    def perform(ooyala_id)
-      video = Video.find(ooyala_id)
-      video.update_tags!
-      video.update_meta!
-      video.update_assets!
-      logger.info "#{video.id} - #{video.tags}"
+    def perform(ooyala_ids)
+      Video.update_data(ooyala_ids)
     end
   end
 end

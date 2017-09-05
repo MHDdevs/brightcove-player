@@ -5,26 +5,11 @@ module OoyalaPlayer
 
     validates :ooyala_id, uniqueness: true, presence: true
 
-    def update_tags
-      OoyalaPlayer::OoyalaTagsFetcher.perform_async(ooyala_id)
-    end
-
-    def ooyala_get(element, params={})
+    def update_all!(params={})
       api = Ooyala::API.new(ENV['OOYALA_API_KEY'], ENV['OOYALA_SECRET_KEY'])
-      data = api.get("assets/#{ooyala_id}/#{element}", params)
-    end
-
-    def update_tags!
-      asset_labels = ooyala_get("labels")
-      update tags: asset_labels['items'].map { |item| item['name'] }.join(',')
-    end
-
-    def update_meta!
-      update meta: ooyala_get("metadata")
-    end
-
-    def update_assets!
-      update assets: ooyala_get("", include: 'primary_preview_image')
+      params.reverse_merge! include: 'metadata,labels,primary_preview_image'
+      data = api.get("assets/#{ooyala_id}", params)
+      update assets: data, tags: (data['labels'] || []).map { |item| item['name'] }.join(','), meta: data['metadata']
     end
 
     def meta_embedURL
@@ -71,6 +56,25 @@ module OoyalaPlayer
 
     def self.add_with_videos(hash)
       @@_parents << hash unless hash.in? @@_parents
+    end
+
+    def self.update_data(ids=[], params={})
+      api = Ooyala::API.new(ENV['OOYALA_API_KEY'], ENV['OOYALA_SECRET_KEY'])
+      params.reverse_merge! include: 'metadata,labels,primary_preview_image', limit: 150
+      ids.each_slice(150) do |slice|
+        params.merge! where: "embed_code IN ('#{slice.join('\',\'')}')"
+        response = api.get("assets",  params)
+        h = {}
+        response['items'].map do |data|
+          h[data['embed_code']] = {
+            assets: data,
+            tags: (data['labels'] || []).map { |item| item['name'] }.join(','),
+            meta: data['metadata']
+          }
+        end
+        OoyalaPlayer::Video.create((h.keys - OoyalaPlayer::Video.all.ids).map{ |id| {ooyala_id: id} })
+        update h.keys, h.values
+      end
     end
   end
 end

@@ -21,27 +21,8 @@ module RailsAdmin
 
         register_instance_option :controller do
           proc do
-            message = []
-            r = @object.update_tags!
-            if r
-              message << t('admin.actions.load_tag.done')
-            else
-              message << r
-            end
-            r = @object.update_assets!
-            if r
-              message << t('admin.actions.load_assets.done')
-            else
-              message << r
-            end
-            r = @object.update_meta!
-            if r
-              message << t('admin.actions.load_meta.done')
-            else
-              message << r
-            end
-
-            flash[:warning] = message.join('\n').html_safe()
+            OoyalaPlayer::OoyalaTagsFetcher.perform_async([@object.id])
+            flash[:warning] = t('admin.actions.load_tag.done')
             redirect_to show_path(model_name: 'OoyalaPlayer~Video', id: @object.id)
           end
         end

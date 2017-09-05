@@ -13,10 +13,9 @@ RailsAdmin.config do |config|
     end
 
     load_tags do
-      only %w(Collection Lesson)
     end
-
   end
+
   config.model 'OoyalaPlayer::Video' do
 
     label 'Ooyala Video'

@@ -9,7 +9,7 @@ en:
       load_tag:
         link: Load Backlot Tag
         menu: Load Backlot Tag
-        done: Succesfully load Backlot tag
+        done: Succesfully load Backlot tag. Reload Page
       load_assets:
         link: Load Backlot assets
         menu: Load Backlot assets

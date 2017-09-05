@@ -22,11 +22,14 @@ module RailsAdmin
         register_instance_option :controller do
           proc do
             object = Object.const_get params[:model_name].classify
-            object.video_columns.each do |field|
-              object.all.map { |m| m.translations.map { |p| p.try(field) } }.flatten.compact.uniq.each do |id|
-                OoyalaPlayer::Video.find_or_create_by(ooyala_id: id).update_tags unless id.nil?
-              end
-            end
+            ids = object.video_columns.map do |field|
+              if object&.translates?
+                object.all.map { |m| m.translations.map { |p| p.try(field) } }.flatten
+              else
+                object.all.map { |m| m.try(field) }
+              end.compact.uniq
+            end.flatten.uniq
+            OoyalaPlayer::OoyalaTagsFetcher.perform_async(ids)
             flash[:success] = t('admin.actions.load_tags.done')
             redirect_to index_path
           end
