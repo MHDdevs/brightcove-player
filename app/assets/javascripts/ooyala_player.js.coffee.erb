@@ -12,8 +12,8 @@ hideOverlay = ->
 initVideoOverlay = (element) ->
   $element = element
   ooyalaContentId = $element.data('content-id')
-  initTime = parseInt($element.data('content-initial-time')) or 0
-  statsUrl = $element.data('content-stats-url') or ''
+  initTime = parseInt($element.attr('data-content-initial-time')) || 0
+  statsUrl = $element.data('content-stats-url') || ''
   skin_file = undefined
 
   ooyalaEventHandler = (player) ->
@@ -43,22 +43,34 @@ initVideoOverlay = (element) ->
       if statsUrl != ''
         events = [
           OO.EVENTS.PAUSED
+          OO.EVENTS.DESTROY
           OO.EVENTS.ERROR
           OO.EVENTS.SEEKED
           OO.EVENTS.STREAM_PLAYED
           OO.EVENTS.VC_PLAYED
         ]
         hasEvent = events.indexOf(eventName) != -1
-        playingEvent = OO.EVENTS.PLAYING == eventName and initTime <= 0
-        playheadSeconds = 0
-        if window.storeStats == true and (hasEvent or playingEvent)
-          playheadSeconds = Math.floor(player.getPlayheadTime())
-          $.ajax
-            method: '<%= OoyalaPlayer.stat_method == :patch ? 'PATCH' : 'POST' %>'
-            url: statsUrl
-            data: <%= OoyalaPlayer.stat_model %>: playhead_seconds: playheadSeconds
+        playingEvent = OO.EVENTS.PLAYING == eventName && initTime <= 0
+
+        if window.storeStats == true and (hasEvent || playingEvent)
+          updatePlayheadSeconds(Math.floor(player.getPlayheadTime()))
+      return
+
+    # user's playback position will be saved if they exit or refresh the page.
+    # new playheadSeconds value will not be present in the dom upon refresh
+    window.onunload = ->
+      if statsUrl != ''
+        updatePlayheadSeconds(Math.floor(player.getPlayheadTime()))
       return
     return
+
+  updatePlayheadSeconds = (playheadSeconds) ->
+    playheadSeconds = playheadSeconds || 0
+    $.ajax
+      method: '<%= OoyalaPlayer.stat_method == :patch ? 'PATCH' : 'POST' %>'
+      url: statsUrl
+      data: <%= OoyalaPlayer.stat_model %>: playhead_seconds: playheadSeconds
+
   playerParam =
     'pcode': $element.data('pcode')
     'playerBrandingId': $element.data('player-id')
