@@ -80,7 +80,7 @@ initVideoOverlay = (element) ->
         localization:
           defaultLanguage: if OoyalaPlayer.locale in OoyalaPlayer.avaliable_locales then OoyalaPlayer.locale else 'en'
     'videoplaza-ads-manager':
-      pulse_host: 'https://uk-mhd.videoplaza.tv'
+      pulse_host: '<%= OoyalaPlayer.pulse_host %>'
       pulse_category: '<%= OoyalaPlayer.pulse_category %>'
       pulse_tags: $element.data('pulse-tags')
     'encodingPriority': [
@@ -102,7 +102,6 @@ initVideoOverlay = (element) ->
   OO.ready ->
     window.player = OO.Player.create($element.attr('id'), ooyalaContentId, playerParam)
     resizePlayer()
-
 
 bindPlayer = ->
   if $('body').css('direction') == 'rtl'

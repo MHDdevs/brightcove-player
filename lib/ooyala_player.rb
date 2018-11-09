@@ -9,6 +9,9 @@ require 'active_record'
     mattr_accessor :pulse_category
     @@pulse_category = ''
 
+    mattr_accessor :pulse_host
+    @@pulse_host = ''
+
     mattr_accessor :stat_model
     @@stat_model = 'lesson_stat'
 

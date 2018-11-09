@@ -20,8 +20,8 @@ Add initializer:
     player.ooyala_secret_key = ENV['OOYALA_SECRET_KEY']
     player.forward_url = 'https://www.mhdpro.com'
     player.pulse_category = 'mhdpro'
+    player.pulse_host = 'https://uk-mhd.videoplaza.tv'
     player.table_name = 'videos'
-    player.pulse_category = 'mhdpro'
     player.stat_model = 'lesson_stat'
     player.stat_method = :patch
     player.airbrake = { id: AIRBRAKE_ID,
@@ -36,6 +36,10 @@ Add initializer:
   - `player.pulse_category` - category for videoplaza ads
     mhd - 'myhairdressers',
     pro - 'mhdpro'
+    default - ''
+  - `player.pulse_host` - path for hosted ads
+    mhd - 'https://uk-mhd.videoplaza.tv'
+    pro - 'https://uk-mhd.videoplaza.tv'
     default - ''
   - `player.stat_model` - model, that stores stat data (playhead seconds, etc.)
     mhd - 'video_stat',
