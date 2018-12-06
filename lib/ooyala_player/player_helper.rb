@@ -62,6 +62,9 @@ module PlayerHelper
       options['data-content-initial-time'] = player.params[:playhead_seconds].to_i
       options['data-content-stats-url'] = send(path, player.object_with_video)
     end
+    if player.params[:playlist_id]
+      options['data-playlist-id'] = player.params[:playlist_id].to_i
+    end
     options
   end
 end

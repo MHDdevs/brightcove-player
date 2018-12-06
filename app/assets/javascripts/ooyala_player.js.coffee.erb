@@ -53,23 +53,26 @@ initVideoOverlay = (element) ->
         playingEvent = OO.EVENTS.PLAYING == eventName && initTime <= 0
 
         if window.storeStats == true and (hasEvent || playingEvent)
-          updatePlayheadSeconds(Math.floor(player.getPlayheadTime()))
+          updatePlayheadSeconds(player)
       return
 
     # user's playback position will be saved if they exit or refresh the page.
     # new playheadSeconds value will not be present in the dom upon refresh
     window.onunload = ->
       if statsUrl != ''
-        updatePlayheadSeconds(Math.floor(player.getPlayheadTime()))
+        updatePlayheadSeconds(player)
       return
     return
 
-  updatePlayheadSeconds = (playheadSeconds) ->
-    playheadSeconds = playheadSeconds || 0
+  updatePlayheadSeconds = (player) ->
+    playheadSeconds = Math.floor(player.getPlayheadTime()) || 0
+    playlistId = Number($("#" + player.getElementId()).attr('data-playlist-id'))
     $.ajax
       method: '<%= OoyalaPlayer.stat_method == :patch ? 'PATCH' : 'POST' %>'
       url: statsUrl
-      data: <%= OoyalaPlayer.stat_model %>: playhead_seconds: playheadSeconds
+      data:
+        <%= OoyalaPlayer.stat_model %>: playhead_seconds: playheadSeconds
+        playlist_id: playlistId
 
   playerParam =
     'pcode': $element.data('pcode')
