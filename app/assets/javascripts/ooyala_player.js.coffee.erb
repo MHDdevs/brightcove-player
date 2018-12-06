@@ -67,12 +67,14 @@ initVideoOverlay = (element) ->
   updatePlayheadSeconds = (player) ->
     playheadSeconds = Math.floor(player.getPlayheadTime()) || 0
     playlistId = Number($("#" + player.getElementId()).attr('data-playlist-id'))
+    videoIds = $("#" + player.getElementId()).attr('data-page-video-ids')
     $.ajax
       method: '<%= OoyalaPlayer.stat_method == :patch ? 'PATCH' : 'POST' %>'
       url: statsUrl
       data:
         <%= OoyalaPlayer.stat_model %>: playhead_seconds: playheadSeconds
         playlist_id: playlistId
+        page_video_ids: videoIds
 
   playerParam =
     'pcode': $element.data('pcode')

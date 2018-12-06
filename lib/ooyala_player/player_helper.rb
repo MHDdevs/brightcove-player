@@ -64,6 +64,7 @@ module PlayerHelper
     end
     if player.params[:playlist_id]
       options['data-playlist-id'] = player.params[:playlist_id].to_i
+      options['data-page-video-ids'] = player.params[:page_video_ids].to_a
     end
     options
   end
