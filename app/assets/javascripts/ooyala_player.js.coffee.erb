@@ -159,6 +159,17 @@ bindPlayer = ->
     return
   return
 
+unbindPlayer = ->
+  $('.play-toggle[data-player-id]').off('click')
+  $('div.video-overlay').off('click')
+  $('.close-button').off('click')
+  return
+
+rebindPlayer = ->
+  unbindPlayer()
+  bindPlayer()
+  return
+
 resizePlayer = ->
   height = $(window).height()
   width = height * 16 / 9
@@ -173,6 +184,7 @@ resizePlayer = ->
   return
 
 window.bindPlayer = bindPlayer
+window.rebindPlayer = rebindPlayer
 window.resizePlayer = resizePlayer
 
 $ ->
