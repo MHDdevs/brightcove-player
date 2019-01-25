@@ -7,10 +7,10 @@ require 'active_record'
     @@version = 'latest'
 
     mattr_accessor :pulse_category
-    @@pulse_category = ''
+    @@pulse_category = nil
 
     mattr_accessor :pulse_host
-    @@pulse_host = ''
+    @@pulse_host = nil
 
     mattr_accessor :stat_model
     @@stat_model = 'lesson_stat'
