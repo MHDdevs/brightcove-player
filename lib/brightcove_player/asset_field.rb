@@ -1,4 +1,4 @@
-module OoyalaPlayer
+module BrightcovePlayer
   class AssetField < RailsAdmin::Config::Fields::Base
     register_instance_option :formatted_value do
       o = bindings[:object]
@@ -9,4 +9,4 @@ module OoyalaPlayer
   end
 end
 
-RailsAdmin::Config::Fields::Types::register(:asset_field, OoyalaPlayer::AssetField)
+RailsAdmin::Config::Fields::Types::register(:asset_field, BrightcovePlayer::AssetField)

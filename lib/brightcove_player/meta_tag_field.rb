@@ -1,4 +1,4 @@
-module OoyalaPlayer
+module BrightcovePlayer
   class MetaTagField < RailsAdmin::Config::Fields::Base
     register_instance_option :formatted_value do
       o = bindings[:object]
@@ -16,4 +16,4 @@ module OoyalaPlayer
   end
 end
 
-RailsAdmin::Config::Fields::Types::register(:meta_tag_field, OoyalaPlayer::MetaTagField)
+RailsAdmin::Config::Fields::Types::register(:meta_tag_field, BrightcovePlayer::MetaTagField)

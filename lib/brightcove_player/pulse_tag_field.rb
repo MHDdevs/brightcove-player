@@ -1,4 +1,4 @@
-module OoyalaPlayer
+module BrightcovePlayer
   class PulseTagField < RailsAdmin::Config::Fields::Base
 
     register_instance_option :formatted_value do
@@ -12,7 +12,7 @@ module OoyalaPlayer
             tags = 'no_tags' if tags.blank?
             "Tags for #{column}[#{locale}] " +
             if v.present?
-                "#{v.link_to tags, v.show_path(model_name: 'OoyalaPlayer~Video', id: video.id)}"
+                "#{v.link_to tags, v.show_path(model_name: 'BrightcovePlayer~Video', id: video.id)}"
             else
               tags
             end
@@ -30,4 +30,4 @@ module OoyalaPlayer
   end
 end
 
-RailsAdmin::Config::Fields::Types::register(:pulse_tags_field, OoyalaPlayer::PulseTagField)
+RailsAdmin::Config::Fields::Types::register(:pulse_tags_field, BrightcovePlayer::PulseTagField)

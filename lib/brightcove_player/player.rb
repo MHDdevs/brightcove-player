@@ -1,4 +1,4 @@
-module OoyalaPlayer
+module BrightcovePlayer
   class Player
     attr_accessor :object_with_video
     attr_accessor :video
@@ -23,9 +23,23 @@ module OoyalaPlayer
       }
     end
 
+    def init_brightcove_handler_options
+      {
+        class: 'video-js vjs-16-9',
+        id: generate_div_id,
+        'data-id': generate_div_id,
+        'data-video-id': @video.id,
+        'data-account': BrightcovePlayer.account_id,
+        'data-player': BrightcovePlayer.player_id,
+        'data-embed': BrightcovePlayer.embed,
+        'data-application_id': true,
+        controls: true,
+      }
+    end
+
     def generate_div_id
       r = "handler_#{@object_with_video.class.name.downcase}_#{@object_with_video.try(:id)||0}"
-      r << '_preview' if @params[:as] == :ooyala_preview_id
+      r << '_preview' if @params[:as] == :brightcove_preview_id
       r
     end
 
@@ -45,7 +59,7 @@ module OoyalaPlayer
     end
 
     def ooyala_pcode
-      OoyalaPlayer.ooyala_api_key.split('.').first
+      BrightcovePlayer.ooyala_api_key.split('.').first
     end
 
     def block_id
@@ -62,20 +76,19 @@ module OoyalaPlayer
       @video.meta || {}
     end
 
-
     private
 
     def generate_ooyala_url(video_embed_code)
-      url = "https://player.ooyala.com/sas/embed_token/#{OoyalaPlayer.ooyala_api_key.split('.').first}/#{video_embed_code}?"
+      url = "https://player.ooyala.com/sas/embed_token/#{BrightcovePlayer.ooyala_api_key.split('.').first}/#{video_embed_code}?"
       url << "account_id=#{@user.id}&" if @user.present?
-      url << "api_key=#{OoyalaPlayer.ooyala_api_key}&"
+      url << "api_key=#{BrightcovePlayer.ooyala_api_key}&"
       url << "expires=#{24.hours.from_now.to_i}"
       # "&override_syndication_group=override_all_synd_groups"
       url
     end
 
     def generate_signature(path, params)
-      Ooyala::API.new(OoyalaPlayer.ooyala_api_key, OoyalaPlayer.ooyala_secret_key).generate_signature('GET', path, params)
+      Ooyala::API.new(BrightcovePlayer.ooyala_api_key, BrightcovePlayer.ooyala_secret_key).generate_signature('GET', path, params)
     end
   end
 end

@@ -1,3 +1,0 @@
-module OoyalaPlayer
-  VERSION = "0.0.13"
-end

@@ -1,32 +1,17 @@
-require 'ooyala_player/pulse_tag_field'
-require 'ooyala_player/meta_tag_field'
-require 'ooyala_player/asset_field'
-require 'ooyala_player/load_tag'
-require 'ooyala_player/load_tags'
+require 'brightcove_player/pulse_tag_field'
+require 'brightcove_player/meta_tag_field'
+require 'brightcove_player/asset_field'
 
 
 RailsAdmin.config do |config|
-  config.included_models << 'OoyalaPlayer::Video'
-  config.actions do
-    load_tag do
-      only 'OoyalaPlayer::Video'
-    end
+  config.included_models << 'BrightcovePlayer::Video'
 
-    load_tags do
-    end
-  end
-
-  config.model 'OoyalaPlayer::Video' do
-
-    label 'Ooyala Video'
+  config.model 'BrightcovePlayer::Video' do
+    label 'Brightcove Video'
 
     list do
       field :ooyala_id
-      field :tags
-      field :meta, :meta_tag_field
-      field :assets, :asset_field do
-        sortable false
-      end
+      field :brightcove_id
       field :parents do
         formatted_value do
           bindings[:object].parents.map do |p|
@@ -39,9 +24,7 @@ RailsAdmin.config do |config|
 
     show do
       field :ooyala_id
-      field :tags
-      field :meta, :meta_tag_field
-      field :assets, :asset_field
+      field :brightcove_id
       field :parents do
         formatted_value do
           bindings[:object].parents.map do |p|
@@ -54,11 +37,7 @@ RailsAdmin.config do |config|
 
     edit do
       field :ooyala_id
-      field :tags
-      field :meta
-      field :assets do
-        read_only true
-      end
+      field :brightcove_id
     end
 
   end

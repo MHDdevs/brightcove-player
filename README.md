@@ -1,46 +1,35 @@
-# Ooyala Player Gem
+# Brightcove Player Gem
 
-Adding player for models with ootala_id fields.
+Adding player for models with brigtcove_id fields.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'ooyala_player', git: 'git@github.com:MHDdevs/ooyala-player.git'
+gem 'brightcove-player', git: 'git@github.com:MHDdevs/brightcove-player.git'
 ```
 
 Add initializer:
 
 ```ruby
-  OoyalaPlayer.configure do |player|
-    player.version = ENV['OOYALA_PLAYER_VERSION']
-    player.id = ENV['OOYALA_PLAYER_ID']
-    player.ooyala_api_key = ENV['OOYALA_API_KEY']
-    player.ooyala_secret_key = ENV['OOYALA_SECRET_KEY']
-    player.forward_url = 'https://www.mhdpro.com'
-    player.pulse_category = 'mhdpro'
-    player.pulse_host = 'https://uk-mhd.videoplaza.tv'
-    player.table_name = 'videos'
-    player.stat_model = 'lesson_stat'
-    player.stat_method = :patch
-    player.airbrake = { id: AIRBRAKE_ID,
-                        key: ARBRAKE_KEY }
+  BrightcovePlayer.configure do |player|
+    player.table_name = 'ooyala_videos'
+    player.stat_model = 'video_stat'
+    player.stat_method = :create
+    player.airbrake = { id: ENV['AIRBRAKE_ID'],
+                        key: ENV['AIRBRAKE_KEY'] }
+
+    player.account_id = ENV['BRIGHTCOVE_ACCOUNT_ID']
+    player.player_id  = ENV['BRIGHTCOVE_PLAYER_ID']
+    player.client_id = ENV['BRIGHTCOVE_CLIENT_ID']
+    player.client_secret = ENV['BRIGHTCOVE_CLIENT_SECRET']
   end
 ```
-  - `player.forward_url` - url, where watermark leads
   - `player.table_name` - table name for storing ooyala video-data
     mhd - 'ooyala_videos',
     pro - 'videos',
     default 'videos'
-  - `player.pulse_category` - category for videoplaza ads
-    mhd - 'myhairdressers',
-    pro - 'mhdpro'
-    default - ''
-  - `player.pulse_host` - path for hosted ads
-    mhd - 'https://uk-mhd.videoplaza.tv'
-    pro - 'https://uk-mhd.videoplaza.tv'
-    default - ''
   - `player.stat_model` - model, that stores stat data (playhead seconds, etc.)
     mhd - 'video_stat',
     pro - 'lesson_stat'
@@ -54,9 +43,9 @@ Currently supported only 4.13.5 version
 
 Include required files:
 
-  - in application.scss `@import "ooyala_player";`
-  - in application.js `//= require ooyala_player`
-  - Include 3d party files via helper `ooyala_player_include_tags`
+  - in application.scss `@import "brightcove-player";`
+  - in application.js `//= require brightcove-player`
+  - Include 3d party files via helper `brightcove_player_include_tags`
 
 ## Usage
 
@@ -66,16 +55,16 @@ This gem is adding ooyala video player and video relation for models.
 
 First, include lib file to models.
 ```ruby
-extend OoyalaPlayer::Ooyalable
+extend BrightcovePlayer::Brightcoveable
 ```
 For all models add this line in file `ApplicationRecord < ActiveRecord::Base`
 Or, just add it in particular models.
 
 To connect player lib with model add
 ```ruby
-ooyalable :column_with_ooyala_id_name
+brightcoveable :column_with_brightcove_id_name
 ```
-Parameter is optional, by default player looks for `ooyala_video_id` column.
+Parameter is optional, by default player looks for `brightcove_video_id` column.
 
 It's possible to add more than one video to model. Just be sure, that they have
 different params.
@@ -85,20 +74,20 @@ or `:video_for_column_with_ooyala_id_name` if using with patameter.
 
 ### Multilanguage support
 
-If `:column_with_ooyala_id_name` is globalized, then `ooyalable :column_with_ooyala_id_name`
+If `:column_with_brightcove_id_name` is globalized, then `brightcoveable :column_with_brightcove_id_name`
 should be plased after `translates` method.
 
 Gem adds `:video(locale=nil)` method and
 `video_locale` methods, where locales are from avaliable locales.
 If you have custom column name, then methods will be named
-`video_for_column_with_ooyala_id_name_locale`
+`video_for_column_with_brightcove_id_name_locale`
 
 
 ### View
 
 Now you can add player layout with this helper:
 ```ruby
-render_player @collection, as: :ooyala_preview_id, class: 'btn btn-default btn-take'
+render_player @collection, as: :brightcove_preview_id, class: 'btn btn-default btn-take'
 ```
 
 This will generate to html:
@@ -110,17 +99,15 @@ This will generate to html:
       <i class="fa fa-close"></i>
     </button>
     <div class="js-ooyalaplayer-block ooyalaplayer-block">
-      <div class="js-player-handler" id="handler_collection_1" data-content-id="..."
-         data-signed-embed-code="..." data-player-version="4.11.13"
-         data-pcode="..." data-player-id="...">
-      </div>
+      <video class="js-video" id="handler_collection_1"...
+      </video>
     </div>
   </div>
 </div>
 <a data-player-id="player_ooyala_preview_id_collection_1" class="play-toggle btn btn-default btn-take" href="#">play video</a>
 ```
 
-First argument - `@collection` - class instance, with `ooyalable` method.
+First argument - `@collection` - class instance, with `brightcoveable` method.
 Second argument - hash with parameters.
 
 
@@ -130,24 +117,22 @@ use
 and ```=render_player_button @video``` for button
 
 Currently avaliable params are:
-- as: 'column_with_ooyala_id_name' - method name, returns ooyala_id;
+- as: 'column_with_brightcove_id_name' - method name, returns brightcove_id;
 - playhead_seconds: 42 - video starts from this second. If this key set, sending statisitic to `lesson_stat_path()`.
   If no this key set, video appears to be preview.
 - class: 'btn' - html classes for link wrapper.
-- searchable: true - if true? than wrap wideo object with VideoObject markup [schema.org](http://www.schema.org/VideoObject).
-**Danger** Then Video is searchable, it provides static link for video, without expired time.
 
 Passing block.
 
 ```ruby
-=render_player @collection, as: :ooyala_preview_id, class: 'btn btn-default btn-take' do
+=render_player @collection, as: :brightcove_preview_id, class: 'btn btn-default btn-take' do
   span.glyphicon.glyphicon-play-circle
   = _('Watch preview')
 ```
 Passed block will be placed inside link.
 ```html
 ...
-<a data-player-id="player_ooyala_preview_id_collection_1" class="play-toggle btn btn-default btn-take" href="#">
+<a data-player-id="player_brightcove_preview_id_collection_1" class="play-toggle btn btn-default btn-take" href="#">
 <span class="glyphicon glyphicon-play-circle"></span>
 Watch preview
 </a>
@@ -156,32 +141,10 @@ Watch preview
 ### rails_admin support
 
 This gem add's video table to rails admin interface
-Video has ooyala_id and pulse tags fields. Pulse tags can be updated by 'update pulse tags' button.
+Video has brightcove_id.
 Parents column has links to objects, that use this video.
 
-To add pulse_tags on model show view add field ```ruby field :pulse_tags```
-
-```ruby
-rails_admin do
-      configure :pulse_tags, :pulse_tags_field
-      ...
-  show do
-    ...
-    field :pulse_tags
-    ...
-  end
-  ...
-end
-```
-
 ## OoyalaPlayer::Video
-
-### Methods
-
-  * `pulse_tags` - returns string with tags
-  * `update_tags` - get tags from ooyala api with worker
-  * `update_tags!` - get tags from ooyala api immidiatly
-  * `parents` - array of objects, using this video
 
 ## TODO
 

@@ -1,9 +1,9 @@
 <% if (Rails.env.production? || Rails.env.staging? ) &&
-  OoyalaPlayer.airbrake[:id].present? && OoyalaPlayer.airbrake[:key].present? %>
+  BrightcovePlayer.airbrake[:id].present? && BrightcovePlayer.airbrake[:key].present? %>
 
 window.airbrake = new (airbrakeJs.Client)(
-  projectId: '<%= OoyalaPlayer.airbrake[:id] %>'
-  projectKey: '<%= OoyalaPlayer.airbrake[:key] %>')
+  projectId: '<%= BrightcovePlayer.airbrake[:id] %>'
+  projectKey: '<%= BrightcovePlayer.airbrake[:key] %>')
 window.airbrake.addFilter (notice) ->
   return notice if notice.context.error_type == 'ooyala'
   null

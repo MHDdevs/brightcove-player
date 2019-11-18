@@ -1,13 +1,13 @@
-module OoyalaPlayer
-  module Ooyalable
+module BrightcovePlayer
+  module Brightcoveable
     extend ActiveSupport::Concern
 
-    def ooyalable(*options)
+    def brightcoveable(*options)
       # has_one :pulse_tag_relation, class_name: 'PulseTag',
       #                              primary_key: video_column,
       #                              foreign_key: :ooyala_id
 
-      video_column = (options[0] || 'ooyala_video_id').to_sym
+      video_column = (options[0] || 'brightcove_video_id').to_sym
       method_name = options[0].present? ? "video_for_#{options[0]}" : 'video'
 
       define_method method_name.to_sym do |locale=nil|
@@ -20,7 +20,7 @@ module OoyalaPlayer
         end
 
         column_method = self.send(col)
-        OoyalaPlayer::Video.find_or_create_by(ooyala_id: column_method) unless column_method.nil?
+        BrightcovePlayer::Video.find_or_create_by(brightcove_id: column_method) unless column_method.nil?
       end
 
       # For rails admin method corresponding to column
@@ -37,12 +37,12 @@ module OoyalaPlayer
 
       if self < ActiveRecord::Base
         if translates? && video_column.in?(translated_attribute_names)
-          OoyalaPlayer::Video.add_with_videos name: "#{self.name}::Translation", column: video_column
+          BrightcovePlayer::Video.add_with_videos name: "#{self.name}::Translation", column: video_column
         else
-          OoyalaPlayer::Video.add_with_videos name: self.name, column: video_column
+          BrightcovePlayer::Video.add_with_videos name: self.name, column: video_column
         end
       else
-        OoyalaPlayer::Video.add_with_videos name: 'Setting', column: 'value'
+        BrightcovePlayer::Video.add_with_videos name: 'Setting', column: 'value'
       end
 
       # list of video columns
