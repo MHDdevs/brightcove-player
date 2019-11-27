@@ -53,10 +53,6 @@ module BrightcovePlayer
       else
         self.video_columns << video_column
       end
-      action = RailsAdmin::Config::Actions.find(:load_tags)
-      prev = action&.only || []
-      _name = self.name
-      action.class.send(:define_method,  :only) do prev.append _name end
     end
   end
 end

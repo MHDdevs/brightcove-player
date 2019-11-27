@@ -6,7 +6,7 @@ module BrightcovePlayer
       v = bindings[:view]
       tags = I18n.available_locales.map do |locale|
         o.class.video_columns.map do |column|
-          video = o.try(column == :ooyala_video_id ? "video" : "video_for_#{column}", locale)
+          video = o.try(column == :brightcove_video_id ? "video" : "video_for_#{column}", locale)
           if video.present?
             tags = video.tags
             tags = 'no_tags' if tags.blank?
