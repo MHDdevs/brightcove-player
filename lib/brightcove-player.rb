@@ -33,6 +33,11 @@ module BrightcovePlayer
   mattr_accessor :embed
   @@embed = 'default'
 
+  mattr_accessor :bumpers
+  @@bumpers = {
+    default: nil
+  }
+
   def self.table_name=(table_name)
     @@table_name = table_name
     BrightcovePlayer::Video.table_name = BrightcovePlayer.table_name unless @@table_name.nil?

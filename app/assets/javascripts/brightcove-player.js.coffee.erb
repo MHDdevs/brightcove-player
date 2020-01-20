@@ -31,9 +31,9 @@ initVideoOverlay = (element) ->
 
     return
 
-    player.mb.subscribe OO.EVENTS.FULLSCREEN_CHANGED, 'fullscreenChanged', (eventName) ->
-      resizePlayer()
-      return
+    # player.mb.subscribe OO.EVENTS.FULLSCREEN_CHANGED, 'fullscreenChanged', (eventName) ->
+    #   resizePlayer()
+    #   return
 
     # user's playback position will be saved if they exit or refresh the page.
     # new playheadSeconds value will not be present in the dom upon refresh
@@ -44,6 +44,9 @@ initVideoOverlay = (element) ->
     return
 
   updatePlayheadSeconds = (player) ->
+    if statsUrl == ''
+      return
+
     playheadSeconds = Math.floor(player.currentTime()) || 0
 
     if !(playheadSeconds%5 == 0) || window.storedPlayheadSeconds == playheadSeconds
@@ -62,6 +65,8 @@ initVideoOverlay = (element) ->
 
   window.player = videojs($element.attr('id'))
 
+  player.displayBumpers()
+
   player.ready ->
     player.currentTime(initTime)
     playerEventHandler(player)
@@ -69,7 +74,7 @@ initVideoOverlay = (element) ->
     # player.play()
 
 bindPlayer = ->
-
+  configureBumpers()
   if $('body').css('direction') == 'rtl'
     observer = new MutationObserver((mutations) ->
       i = 0
@@ -146,6 +151,59 @@ resizePlayer = ->
   # wrapper.css 'margin-top', margin + 'px'
   # console.log('resize', margin)
   return
+
+#bumpers plugin
+
+configureBumpers = ->
+  if (typeof videojs == 'undefined' )
+    return
+
+  videojs.registerPlugin 'displayBumpers', ->
+    myPlayer = this
+    prev = myPlayer.mediainfo.id
+
+    bumperId = (tags = []) ->
+      `var bumperId`
+      bumperId = null
+      bumpers = <%= BrightcovePlayer.bumpers.to_json %>
+      filtered = tags.map((w) ->
+        e = w.match(/[L,l]esson[\s,_](\d+)/)
+        #chack for lessons in tags
+        if e != null then e[1] else null
+      ).filter(Boolean)
+
+      if filtered.length > 0 and Object.keys(bumpers).includes('lesson_' + filtered[0])
+        bumperId = bumpers['lesson_' + filtered[0]]
+      else if Object.keys(bumpers).includes('default')
+        bumperId = bumpers['default']
+      else
+        bumperId = null
+      bumperId
+
+    playVideo = (id) ->
+      if id == null
+        return
+      # Get the video for the current randomly selected video Id
+      myPlayer.catalog.getVideo id, (error, video) ->
+        # Deal with error
+        if error
+          console.log 'error getting bumper', error
+        myPlayer.catalog.load video
+        myPlayer.play()
+        return
+      return
+
+    myPlayer.one 'play', ->
+      myPlayer.controlBar.hide()
+      playVideo bumperId(myPlayer.mediainfo.tags)
+      return
+    # +++  Listen for the ended event and play the next video or bumper +++
+    myPlayer.on 'ended', ->
+      myPlayer.controlBar.show()
+      if myPlayer.mediainfo.id != prev
+        playVideo prev
+      return
+    return
 
 window.bindPlayer = bindPlayer
 window.rebindPlayer = rebindPlayer
