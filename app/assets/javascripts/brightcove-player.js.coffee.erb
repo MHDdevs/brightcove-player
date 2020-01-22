@@ -65,7 +65,8 @@ initVideoOverlay = (element) ->
 
   window.player = videojs($element.attr('id'))
 
-  player.displayBumpers()
+  if (bowser.name != 'Internet Explorer' && bowser.name != 'Microsoft Edge' )
+    player.displayBumpers()
 
   player.ready ->
     player.currentTime(initTime)
@@ -145,11 +146,10 @@ resizePlayer = ->
     width = $(window).width()
   wrapper = $('.ooyala-wrapper:visible')
   wrapper.innerWidth width
-  # padding = wrapper.outerWidth() - wrapper.width()
-  # new_height = $('.ooyala-wrapper:visible .oo-player-skin').outerWidth() * 9 / 16
-  # margin = (height - new_height - padding) / 2
-  # wrapper.css 'margin-top', margin + 'px'
-  # console.log('resize', margin)
+  padding = wrapper.outerWidth() - wrapper.width()
+  new_height = $('.ooyala-wrapper:visible .video-js').outerWidth() * 9 / 16
+  margin = (height - new_height - padding) / 2
+  wrapper.css 'margin-top', margin + 'px'
   return
 
 #bumpers plugin
@@ -161,6 +161,10 @@ configureBumpers = ->
   videojs.registerPlugin 'displayBumpers', ->
     myPlayer = this
     prev = myPlayer.mediainfo.id
+    firstTime = true
+
+    myPlayer.on 'ready', ->
+      this.play();
 
     bumperId = (tags = []) ->
       `var bumperId`
@@ -172,9 +176,9 @@ configureBumpers = ->
         if e != null then e[1] else null
       ).filter(Boolean)
 
-      if filtered.length > 0 and Object.keys(bumpers).includes('lesson_' + filtered[0])
+      if filtered.length > 0 and Object.keys(bumpers).indexOf('lesson_' + filtered[0]) != -1
         bumperId = bumpers['lesson_' + filtered[0]]
-      else if Object.keys(bumpers).includes('default')
+      else if Object.keys(bumpers).indexOf('default') != -1
         bumperId = bumpers['default']
       else
         bumperId = null
@@ -190,12 +194,20 @@ configureBumpers = ->
           console.log 'error getting bumper', error
         myPlayer.catalog.load video
         myPlayer.play()
+        setTimeout (->
+          window.player.play()
+          return
+        ),1000
         return
       return
 
-    myPlayer.one 'play', ->
-      myPlayer.controlBar.hide()
-      playVideo bumperId(myPlayer.mediainfo.tags)
+    myPlayer.on 'play', ->
+      if firstTime
+        firstTime = false
+        myPlayer.pause()
+        myPlayer.controlBar.hide()
+        playVideo bumperId(myPlayer.mediainfo.tags)
+
       return
     # +++  Listen for the ended event and play the next video or bumper +++
     myPlayer.on 'ended', ->

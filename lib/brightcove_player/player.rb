@@ -33,6 +33,7 @@ module BrightcovePlayer
         'data-player': BrightcovePlayer.player_id,
         'data-embed': BrightcovePlayer.embed,
         'data-application_id': true,
+        playsinline: true,
         controls: true,
       }
     end
