@@ -55,6 +55,7 @@ initVideoOverlay = (element) ->
     window.storedPlayheadSeconds = playheadSeconds
 
     el = player.el()
+    el.dataset.contentInitialTime = playheadSeconds
     $.ajax
       method: '<%= BrightcovePlayer.stat_method == :patch ? 'PATCH' : 'POST' %>'
       url: statsUrl
@@ -162,6 +163,7 @@ configureBumpers = ->
     myPlayer = this
     prev = myPlayer.mediainfo.id
     firstTime = true
+    initTime = 0
 
     myPlayer.on 'ready', ->
       this.play();
@@ -184,7 +186,7 @@ configureBumpers = ->
         bumperId = null
       bumperId
 
-    playVideo = (id) ->
+    playVideo = (id, offset=0) ->
       if id == null
         return
       # Get the video for the current randomly selected video Id
@@ -195,14 +197,16 @@ configureBumpers = ->
         myPlayer.catalog.load video
         myPlayer.play()
         setTimeout (->
+          window.player.currentTime(offset)
           window.player.play()
           return
-        ),1000
+        ),500
         return
       return
 
     myPlayer.on 'play', ->
       if firstTime
+        initTime = myPlayer.currentTime()
         firstTime = false
         myPlayer.pause()
         myPlayer.controlBar.hide()
@@ -213,7 +217,7 @@ configureBumpers = ->
     myPlayer.on 'ended', ->
       myPlayer.controlBar.show()
       if myPlayer.mediainfo.id != prev
-        playVideo prev
+        playVideo prev, initTime
       return
     return
 
