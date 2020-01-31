@@ -200,7 +200,7 @@ configureBumpers = ->
           window.player.currentTime(offset)
           window.player.play()
           return
-        ),500
+        ),1000
         return
       return
 
@@ -208,7 +208,7 @@ configureBumpers = ->
       if firstTime
         initTime = myPlayer.currentTime()
         firstTime = false
-        myPlayer.pause()
+        # myPlayer.pause()
         myPlayer.controlBar.hide()
         playVideo bumperId(myPlayer.mediainfo.tags)
 
