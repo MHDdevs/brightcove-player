@@ -205,11 +205,6 @@ configureBumpers = ->
         return
       return
 
-    myPlayer.on 'pause', ->
-      if adsPlaying
-        myPlayer.play()
-      return
-
     myPlayer.on 'play', ->
       if firstTime
         initTime = myPlayer.currentTime()
@@ -217,6 +212,15 @@ configureBumpers = ->
         firstTime = false
         # myPlayer.pause()
         myPlayer.controlBar.hide()
+
+        setTimeout (->
+          if !adsPlaying
+            return
+          firstTime = false
+          playVideo prev, initTime
+          return
+        ),7000
+
         playVideo bumperId(myPlayer.mediainfo.tags)
 
       return
