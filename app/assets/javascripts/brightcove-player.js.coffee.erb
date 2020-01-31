@@ -163,6 +163,7 @@ configureBumpers = ->
     myPlayer = this
     prev = myPlayer.mediainfo.id
     firstTime = true
+    adsPlaying = false
     initTime = 0
 
     myPlayer.on 'ready', ->
@@ -204,9 +205,15 @@ configureBumpers = ->
         return
       return
 
+    myPlayer.on 'pause', ->
+      if adsPlaying
+        myPlayer.play()
+      return
+
     myPlayer.on 'play', ->
       if firstTime
         initTime = myPlayer.currentTime()
+        adsPlaying = true
         firstTime = false
         # myPlayer.pause()
         myPlayer.controlBar.hide()
@@ -215,6 +222,7 @@ configureBumpers = ->
       return
     # +++  Listen for the ended event and play the next video or bumper +++
     myPlayer.on 'ended', ->
+      adsPlaying = false
       myPlayer.controlBar.show()
       if myPlayer.mediainfo.id != prev
         playVideo prev, initTime
@@ -227,7 +235,6 @@ window.resizePlayer = resizePlayer
 
 $ ->
   bindPlayer()
-
 
 $(window).resize ->
   resizePlayer()
