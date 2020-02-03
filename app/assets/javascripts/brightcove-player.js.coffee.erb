@@ -66,7 +66,7 @@ initVideoOverlay = (element) ->
 
   window.player = videojs($element.attr('id'))
 
-  if (bowser.name != 'Internet Explorer' && bowser.name != 'Microsoft Edge' )
+  if (bowser.name != 'Internet Explorer' && bowser.name != 'Microsoft Edge' && bowser.name != 'Samsung Internet for Android' )
     player.displayBumpers()
 
   player.ready ->
@@ -219,7 +219,7 @@ configureBumpers = ->
           firstTime = false
           playVideo prev, initTime
           return
-        ),7000
+        ),8000
 
         playVideo bumperId(myPlayer.mediainfo.tags)
 
