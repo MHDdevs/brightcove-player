@@ -112,6 +112,11 @@ bindPlayer = ->
       initVideoOverlay jsPlayerHandler
       $('.video-overlay#' + elementId).fadeToggle 'fast'
       resizePlayer()
+
+      # Disable the Progress Scrubber if data-progress-control = "0"
+      if $(this).data("progressControl") == 0
+        window.player.controlBar.progressControl.disable()
+
     return
   $('div.video-overlay').click (event) ->
     if event.target != this

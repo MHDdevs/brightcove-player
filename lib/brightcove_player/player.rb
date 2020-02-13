@@ -6,12 +6,14 @@ module BrightcovePlayer
 
     def initialize(object_with_video, params, user)
       @object_with_video = object_with_video
-      @params = params
+      @params = reject_data_keys(params)
+
       @video = if @params[:as].present?
           @object_with_video.send("video_for_#{@params[:as]}")
         else
           @object_with_video.video
         end
+
       @user = user
     end
 
@@ -90,6 +92,10 @@ module BrightcovePlayer
 
     def generate_signature(path, params)
       Ooyala::API.new(BrightcovePlayer.ooyala_api_key, BrightcovePlayer.ooyala_secret_key).generate_signature('GET', path, params)
+    end
+
+    def reject_data_keys(params)
+      params.reject { |key, _| key == :data || key == "data" }
     end
   end
 end

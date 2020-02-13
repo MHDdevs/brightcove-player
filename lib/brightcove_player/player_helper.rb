@@ -8,9 +8,12 @@ module PlayerHelper
 
     @player = BrightcovePlayer::Player.new video, params, nil
 
+    data_attrs =  { player_id: @player.block_id }
+    data_attrs.merge!(params[:data]) if params.key?(:data)
+
     capture do
       concat render partial: 'player/partial'
-      concat link_to block_given? ? capture(&block) : 'play video','#', data: { player_id: @player.block_id },
+      concat link_to block_given? ? capture(&block) : 'play video','#', data: data_attrs,
         class: "play-toggle #{params[:class]}"
     end
     # render partial: 'player/partial', locals: { video: video }
