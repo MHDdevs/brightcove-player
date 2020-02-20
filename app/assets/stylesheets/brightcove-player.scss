@@ -82,3 +82,17 @@ $black-light: rgba(0, 0, 0, 0.85);
 .oo-start-screen-linear-gradient {
   background: none !important;
 }
+
+#backButton img {
+  margin-top: -7px;
+  height: 45px;
+  width: 45px;
+  cursor: pointer;
+}
+
+#forwardButton img {
+  margin-top: -7px;
+  height: 45px;
+  width: 45px;
+  cursor: pointer;
+}
