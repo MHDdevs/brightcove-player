@@ -164,6 +164,9 @@ configureBumpers = ->
   if (typeof videojs == 'undefined' )
     return
 
+  if (typeof videojs.getPlugin('displayBumpers') != 'undefined')
+    videojs.deregisterPlugin('displayBumpers')
+
   videojs.registerPlugin 'displayBumpers', ->
     myPlayer = this
     prev = myPlayer.mediainfo.id
